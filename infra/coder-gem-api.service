@@ -1,0 +1,11 @@
+[Unit]
+Description=coder-gem-api
+After=syslog.target
+
+[Service]
+User=coder1
+ExecStart = /var/apps/coder-gem-api/coder-gem-api.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
