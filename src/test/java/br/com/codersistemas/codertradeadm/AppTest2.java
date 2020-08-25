@@ -91,7 +91,7 @@ public class AppTest2 {
 		
 		//Blog
 		classes = new Class[] {
-				br.com.codersistemas.codertradeadm.domain.Ordem.class
+				br.com.codersistemas.codertradeadm.domain.ExecucaoVenda.class
 			};
 		
 		indexEntidade = 0;

@@ -6,15 +6,18 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -90,7 +93,6 @@ public class Ordem implements Serializable {
 	@Column(name = "qtd_executada", precision = 10, scale = 0, nullable = false)
 	private BigDecimal qtdExecutada;
 
-	@NotNull(message = "Preco medio deve ser preenchido.")
 	@Column(name = "preco_medio", precision = 10, scale = 2, nullable = true)
 	private BigDecimal precoMedio;
 
@@ -127,6 +129,13 @@ public class Ordem implements Serializable {
 	@NotNull(message = "Quantidade Disponível deve ser preenchido.")
 	@Column(name = "quantidade_disponivel", precision = 10, scale = 0, nullable = false)
 	private BigDecimal quantidadeDisponivel;
+	
+	@NotNull(message = "Saldo da Quantidade deve ser preenchido.")
+	@Column(name = "saldo_quantidade", precision = 10, scale = 0, nullable = false)
+	private BigDecimal saldoQuantidade;
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="compra")
+	private List<ExecucaoVenda>execucoesVenda;
 
 	public String getAtivoReal() {
 		return ativo.substring(0, 5);
@@ -141,6 +150,8 @@ public class Ordem implements Serializable {
 		sb.append(String.format("%-6s",this.natureza));
 		sb.append(";");
 		sb.append(String.format("%4d",quantidade.intValue()));
+		sb.append(";");
+		sb.append(String.format("%4d",saldoQuantidade.intValue()));
 		sb.append(";");
 		sb.append(NumberUtils.formatBR(preco));
 		return sb.toString();

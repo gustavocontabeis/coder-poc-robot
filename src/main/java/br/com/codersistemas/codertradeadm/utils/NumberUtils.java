@@ -8,6 +8,7 @@ public class NumberUtils {
 
 	public static Object formatBR(BigDecimal valor) {
 		NumberFormat instance = NumberFormat.getInstance(new Locale("pt","BR"));
+		instance.setMinimumFractionDigits(2);
 		return instance.format(valor.floatValue());
 	}
 
