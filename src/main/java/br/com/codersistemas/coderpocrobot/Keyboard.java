@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class Keyboard {
 
     private Robot robot;
-	private int DELAY;
+	private int DELAY = 100;
 
     public static void main(String... args) throws Exception {
         Keyboard keyboard = new Keyboard();
@@ -49,6 +49,7 @@ public class Keyboard {
     public void type(CharSequence characters) {
     	String string = characters.toString();
     	System.out.println(string);
+    	robot.delay(DELAY);
 		switch (string.toUpperCase()) {
 		case "TAB":
 			doType(KeyEvent.VK_TAB);
@@ -81,7 +82,6 @@ public class Keyboard {
 			doType(KeyEvent.VK_ESCAPE);
 			break;
 		default:
-			
 			//delay
 			if(string.toUpperCase().matches("DELAY\\s*.?\\d*.?")) {
 				Matcher matcher = Pattern.compile("\\d+").matcher(string);
@@ -90,8 +90,15 @@ public class Keyboard {
 				}
 			} else 
 			
-			if(string.toUpperCase().matches("CLICK\\s*.?\\d*.?\\s*.?\\d*.?")) {
-				System.out.println(string);
+			if(string.toUpperCase().matches("CLICK \\d*.? \\d*.?")) {
+		    	Matcher matcher = Pattern.compile("CLICK \\d*.? \\d*.?").matcher(string.toUpperCase());
+		    	while(matcher.find()) {
+		    		String group = matcher.group();
+		    		String[] split = group.split(" ");
+					Integer x = new Integer(split[1]);
+					Integer y = new Integer(split[2]);
+					click(x, y);
+		    	}
 			} else 
 			
 			if(string.toUpperCase().matches("CLICK2X\\s*.?\\d*.?\\s*.?\\d*.?")) {
@@ -100,7 +107,6 @@ public class Keyboard {
 				int length = characters.length();
 				for (int i = 0; i < length; i++) {
 					char character = characters.charAt(i);
-					DELAY = 100;
 					robot.delay(DELAY);
 					type(character);
 				}
