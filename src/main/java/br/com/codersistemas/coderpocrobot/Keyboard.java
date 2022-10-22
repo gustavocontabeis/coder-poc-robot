@@ -81,6 +81,9 @@ public class Keyboard {
 		case "ESC":
 			doType(KeyEvent.VK_ESCAPE);
 			break;
+		case "SPACE":
+			doType(KeyEvent.VK_SPACE);
+			break;
 		default:
 			//delay
 			if(string.toUpperCase().matches("DELAY\\s*.?\\d*.?")) {
