@@ -31,7 +31,7 @@ import javax.swing.border.EtchedBorder;
 
 import br.com.codersistemas.coderpocrobot.Keyboard;
 
-public class RobotUI extends JFrame implements XListener {
+public class RobotUI extends JFrame implements RobotListener {
 
 	private static final long serialVersionUID = -3556068906690980070L;
 	private Border border;
