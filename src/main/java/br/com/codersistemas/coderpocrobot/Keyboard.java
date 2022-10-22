@@ -4,10 +4,15 @@ import static java.awt.event.KeyEvent.*;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Keyboard {
 
     private Robot robot;
+	private int DELAY;
 
     public static void main(String... args) throws Exception {
         Keyboard keyboard = new Keyboard();
@@ -21,22 +26,101 @@ public class Keyboard {
     public Keyboard(Robot robot) {
         this.robot = robot;
     }
+    
+	public void click(int x, int y) {
+		System.out.println("click "+x+" "+y);
+		robot.mouseMove(x, y);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	};
+
+	public void click2x(int x, int y) {
+		System.out.println("click2x "+x+" "+y); 
+		
+		robot.mouseMove(x, y);
+		
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	};
 
     public void type(CharSequence characters) {
-        int length = characters.length();
-        for (int i = 0; i < length; i++) {
-            char character = characters.charAt(i);
-            type(character);
-        }
+    	String string = characters.toString();
+    	System.out.println(string);
+		switch (string.toUpperCase()) {
+		case "TAB":
+			doType(KeyEvent.VK_TAB);
+			break;
+		case "ENTER":
+			doType(KeyEvent.VK_ENTER);
+			break;
+		case "UP":
+			doType(KeyEvent.VK_UP);
+			break;
+		case "DOWN":
+			doType(KeyEvent.VK_DOWN);
+			break;
+		case "LEFT":
+			doType(KeyEvent.VK_LEFT);
+			break;
+		case "RIGHT":
+			doType(KeyEvent.VK_RIGHT);
+			break;
+		case "BACK":
+			doType(KeyEvent.VK_BACK_SPACE);
+			break;
+		case "HOME":
+			doType(KeyEvent.VK_HOME);
+			break;
+		case "END":
+			doType(KeyEvent.VK_END);
+			break;
+		case "ESC":
+			doType(KeyEvent.VK_ESCAPE);
+			break;
+		default:
+			
+			//delay
+			if(string.toUpperCase().matches("DELAY\\s*.?\\d*.?")) {
+				Matcher matcher = Pattern.compile("\\d+").matcher(string);
+				while(matcher.find()) {
+					robot.delay(new Integer( matcher.group()));
+				}
+			} else 
+			
+			if(string.toUpperCase().matches("CLICK\\s*.?\\d*.?\\s*.?\\d*.?")) {
+				System.out.println(string);
+			} else 
+			
+			if(string.toUpperCase().matches("CLICK2X\\s*.?\\d*.?\\s*.?\\d*.?")) {
+				System.out.println(string);
+			} else {
+				int length = characters.length();
+				for (int i = 0; i < length; i++) {
+					char character = characters.charAt(i);
+					DELAY = 100;
+					robot.delay(DELAY);
+					type(character);
+				}
+			}
+			
+			break;
+		}
     }
 
     public void type(char character) {
         switch (character) {
         case 'a': doType(VK_A); break;
+        case 'á': doType(VK_A); break;
+        case 'ã': doType(VK_A); break;
         case 'b': doType(VK_B); break;
         case 'c': doType(VK_C); break;
         case 'd': doType(VK_D); break;
         case 'e': doType(VK_E); break;
+        case 'é': doType(VK_E); break;
+        case 'ẽ': doType(VK_E); break;
         case 'f': doType(VK_F); break;
         case 'g': doType(VK_G); break;
         case 'h': doType(VK_H); break;
@@ -47,6 +131,8 @@ public class Keyboard {
         case 'm': doType(VK_M); break;
         case 'n': doType(VK_N); break;
         case 'o': doType(VK_O); break;
+        case 'ó': doType(VK_O); break;
+        case 'õ': doType(VK_O); break;
         case 'p': doType(VK_P); break;
         case 'q': doType(VK_Q); break;
         case 'r': doType(VK_R); break;
@@ -59,10 +145,15 @@ public class Keyboard {
         case 'y': doType(VK_Y); break;
         case 'z': doType(VK_Z); break;
         case 'A': doType(VK_SHIFT, VK_A); break;
+        case 'Á': doType(VK_SHIFT, VK_A); break;
+        case 'Ã': doType(VK_SHIFT, VK_A); break;
         case 'B': doType(VK_SHIFT, VK_B); break;
         case 'C': doType(VK_SHIFT, VK_C); break;
         case 'D': doType(VK_SHIFT, VK_D); break;
         case 'E': doType(VK_SHIFT, VK_E); break;
+        case 'É': doType(VK_SHIFT, VK_E); break;
+        case 'Ê': doType(VK_SHIFT, VK_E); break;
+        case 'Ẽ': doType(VK_SHIFT, VK_E); break;
         case 'F': doType(VK_SHIFT, VK_F); break;
         case 'G': doType(VK_SHIFT, VK_G); break;
         case 'H': doType(VK_SHIFT, VK_H); break;
@@ -98,7 +189,8 @@ public class Keyboard {
         case '-': doType(VK_MINUS); break;
         case '=': doType(VK_EQUALS); break;
         case '~': doType(VK_SHIFT, VK_BACK_QUOTE); break;
-        case '!': doType(VK_EXCLAMATION_MARK); break;
+        //case '!': doType(VK_EXCLAMATION_MARK); break;
+        case '!': doType(VK_SHIFT,VK_1); break;
         case '@': doType(VK_AT); break;
         case '#': doType(VK_NUMBER_SIGN); break;
         case '$': doType(VK_DOLLAR); break;
@@ -142,7 +234,6 @@ public class Keyboard {
         if (length == 0) {
             return;
         }
-
         robot.keyPress(keyCodes[offset]);
         doType(keyCodes, offset + 1, length - 1);
         robot.keyRelease(keyCodes[offset]);
