@@ -58,6 +58,7 @@ public class RobotUI extends JFrame implements ActionListener{
 		panelButtons.add(addFlowLayout(new JButton("LEFT"), new JButton("RIGHT")));
 		panelButtons.add(addFlowLayout(new JButton("BACK"), new JButton("DEL")));
 		panelButtons.add(addFlowLayout(new JButton("ESC")));
+		panelButtons.add(addFlowLayout(new JButton("SPACE")));
 		txtDelay = new JTextField(10);
 		panelButtons.add(addFlowLayout(new JLabel("Delay"),txtDelay));
 		JButton btListenMouse = new JButton("Clicar");
