@@ -145,26 +145,41 @@ public class PanelBuilder {
 			DataField previous = null;
 			int x = 0;
 			int maxComponentHeight = 0;
+			boolean withLabel = line.isWithLabel();
 			for (DataField dataField : components) {
 				if(previous == null) {
 					x = 5;
 					maxComponentHeight = 0;
 				}
-				JComponent component = dataField.getComponent();
-				boolean hasLabel = !(component instanceof JButton); 
-				jlabel = new JLabel(hasLabel?dataField.getLabel():"");
-				int widthCalculated = dataField.getWidthCalculated();
-				int componentHeight = component.getHeight() != 0 ? component.getHeight() : HEIGTH_DEFAULT;
-				jlabel.setBounds(x, y, widthCalculated, HEIGTH_DEFAULT);
-				component.setBounds(x, jlabel.getY()+jlabel.getHeight() , widthCalculated, componentHeight);
-				System.out.printf("%-30s - %6d - %6d - %6d - %6d \n", dataField.getLabel(), component.getX(), component.getY(), widthCalculated, componentHeight);
-				x += (padding + component.getWidth());
-				previous = dataField;
-				if(maxComponentHeight < componentHeight) {
-					maxComponentHeight = componentHeight;
+				if(withLabel) {
+					JComponent component = dataField.getComponent();
+					boolean hasLabel = !(component instanceof JButton); 
+					jlabel = new JLabel(hasLabel?dataField.getLabel():"");
+					int widthCalculated = dataField.getWidthCalculated();
+					int componentHeight = component.getHeight() != 0 ? component.getHeight() : HEIGTH_DEFAULT;
+					jlabel.setBounds(x, y, widthCalculated, HEIGTH_DEFAULT);
+					component.setBounds(x, jlabel.getY()+jlabel.getHeight() , widthCalculated, componentHeight);
+					System.out.printf("%-30s - %6d - %6d - %6d - %6d \n", dataField.getLabel(), component.getX(), component.getY(), widthCalculated, componentHeight);
+					x += (padding + component.getWidth());
+					previous = dataField;
+					if(maxComponentHeight < componentHeight) {
+						maxComponentHeight = componentHeight;
+					}
+					panel.add(jlabel);
+					panel.add(component);
+				} else {
+					JComponent component = dataField.getComponent();
+					int widthCalculated = dataField.getWidthCalculated();
+					int componentHeight = component.getHeight() != 0 ? component.getHeight() : HEIGTH_DEFAULT;
+					component.setBounds(x, y, widthCalculated, componentHeight);
+					System.out.printf("%-30s - %6d - %6d - %6d - %6d \n", dataField.getLabel(), component.getX(), component.getY(), widthCalculated, componentHeight);
+					x += (padding + component.getWidth());
+					previous = dataField;
+					if(maxComponentHeight < componentHeight) {
+						maxComponentHeight = componentHeight;
+					}
+					panel.add(component);
 				}
-				panel.add(jlabel);
-				panel.add(component);
 			}
 			y += (jlabel != null ? jlabel.getHeight() : 0) + padding + maxComponentHeight;
 		}

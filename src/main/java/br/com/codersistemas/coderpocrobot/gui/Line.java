@@ -15,4 +15,13 @@ public class Line {
 		return components;
 	}
 
+	public boolean isWithLabel() {
+		for(DataField dataField : components) {
+			if(dataField.isWithLabel()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

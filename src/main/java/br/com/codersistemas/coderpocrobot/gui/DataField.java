@@ -1,5 +1,6 @@
 package br.com.codersistemas.coderpocrobot.gui;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 
 public class DataField { 
@@ -54,7 +55,11 @@ public class DataField {
 	}
 
 	public void setLabel(String label) {
-		label = label;
+		this.label = label;
+	}
+
+	public boolean isWithLabel() {
+		return !(component instanceof JButton);
 	}
 
 }
