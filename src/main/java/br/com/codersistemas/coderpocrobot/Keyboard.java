@@ -49,6 +49,11 @@ public class Keyboard {
     public void type(CharSequence characters) {
     	String string = characters.toString();
     	System.out.println(string);
+    	
+    	if(string.startsWith("#")) {
+    		return;
+    	}
+    	
     	robot.delay(DELAY);
 		switch (string.toUpperCase()) {
 		case "TAB":
