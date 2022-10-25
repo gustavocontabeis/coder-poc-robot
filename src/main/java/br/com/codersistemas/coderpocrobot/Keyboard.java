@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.com.codersistemas.coderpocrobot.exceptions.StopException;
+
 public class Keyboard {
 
     private Robot robot;
@@ -47,6 +49,10 @@ public class Keyboard {
     	
     	if(string.startsWith("#")) {
     		return;
+    	}
+    	
+    	if(string.startsWith("#fim")) {
+    		throw new StopException();
     	}
     	
     	robot.delay(DELAY);

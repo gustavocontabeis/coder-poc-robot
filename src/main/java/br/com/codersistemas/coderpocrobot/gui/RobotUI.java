@@ -1,35 +1,40 @@
 package br.com.codersistemas.coderpocrobot.gui;
 
 import java.awt.AWTException;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
-import java.awt.Robot;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListDataListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import br.com.codersistemas.coderpocrobot.Keyboard;
+import br.com.codersistemas.libs.utils.FileUtil;
 
 public class RobotUI extends JFrame implements RobotListener {
 
@@ -40,6 +45,8 @@ public class RobotUI extends JFrame implements RobotListener {
 	private Keyboard robot;
 	private JTextField txtDelay;
 	private PanelBuilder panelBuilder;
+	private List<File>files;
+	private JList<String>listFiles;
 
 	public RobotUI() throws HeadlessException, AWTException {
 		super("Robot");
@@ -48,7 +55,7 @@ public class RobotUI extends JFrame implements RobotListener {
 		setVisible(true);
 		robot = new Keyboard();
 		border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-
+		loadFiles();
 		panelBuilder = new PanelBuilder(this, 400, 600);
 		JPanel panelButtons = panelBuilder
 				.addText("Escrever", 12)
@@ -74,9 +81,10 @@ public class RobotUI extends JFrame implements RobotListener {
 				.addButton("Shift End", 6)
 				.newLine()
 				.addText("Delay", 12)
-				.newLine().
-				addButton("Run!", 12)
 				.newLine()
+				.addButton("Run!", 12)
+				.newLine()
+				.addList(listFiles, 12)
 				.build();
 
 		JPanel panelCommands = new JPanel(new GridLayout(1, 1));
@@ -92,18 +100,40 @@ public class RobotUI extends JFrame implements RobotListener {
 
 	}
 
-	public static void main(String[] args) {
+	private void loadFiles() {
+		files = new ArrayList<>();
+		File dir = new File(".");
+		System.out.println(dir.getAbsolutePath());
+		File[] listFiles = dir.listFiles();
+		for (File file : listFiles) {
+			if(file.getName().toLowerCase().endsWith(".robot")) {
+				files.add(file);
+			}
+		}
+		Collections.sort(files);
+		String[] filesNames = new String[files.size()];
+		for (int i = 0; i < files.size(); i++) {
+			filesNames[i] = files.get(i).getName();
+		}
+		
+		this.listFiles = new JList<String>(filesNames);
+		this.listFiles.setBounds(0, 0, 0, 150);
+		this.listFiles.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				System.out.println(e.getFirstIndex()+" - "+e.getFirstIndex());
+				loadFileContentByIndex();
+			}
+		});
+	}
+	
+	private void loadFileContentByIndex() {
+		int selectedIndex = this.listFiles.getSelectedIndex();
+		File file = this.files.get(selectedIndex);
 		try {
-			SwingUtilities.invokeAndWait(() -> {
-				try {
-					RobotUI x = new RobotUI();
-				} catch (HeadlessException | AWTException e) {
-					e.printStackTrace();
-				}
-			});
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
+			String string = new String(Files.readAllBytes(Paths.get(file.getName())));
+			txtCommands.setText(string);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -129,7 +159,6 @@ public class RobotUI extends JFrame implements RobotListener {
 			}
 		} else if (source instanceof JTextField) {
 			JTextField txt = (JTextField) source;
-
 		}
 
 	}
@@ -193,6 +222,22 @@ public class RobotUI extends JFrame implements RobotListener {
 	private void appendCommand(String command) {
 		String textCommands = txtCommands.getText();
 		txtCommands.setText(textCommands + "\n" + command);
+	}
+
+	public static void main(String[] args) {
+		try {
+			SwingUtilities.invokeAndWait(() -> {
+				try {
+					RobotUI x = new RobotUI();
+				} catch (HeadlessException | AWTException e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

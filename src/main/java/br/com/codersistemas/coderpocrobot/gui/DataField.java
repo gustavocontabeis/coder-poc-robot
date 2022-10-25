@@ -2,6 +2,7 @@ package br.com.codersistemas.coderpocrobot.gui;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JList;
 
 public class DataField { 
 	
@@ -59,7 +60,7 @@ public class DataField {
 	}
 
 	public boolean isWithLabel() {
-		return !(component instanceof JButton);
+		return !(component instanceof JButton || component instanceof JList);
 	}
 
 }

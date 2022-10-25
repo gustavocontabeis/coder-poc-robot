@@ -14,6 +14,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -131,6 +132,12 @@ public class PanelBuilder {
 		return this;
 	}
 
+	public PanelBuilder addList(JList<String> component, int columns) {
+		DataField dataField = new DataField(this, component, "", columns);
+		line.add(dataField);
+		return this;
+	}
+	
 	public JPanel build() {
 		
 		JPanel panel = new JPanel();
@@ -206,5 +213,5 @@ public class PanelBuilder {
 	public JTextComponent getText(String label) {
 		return (JTextComponent) texts.get(label);
 	}
-	
+
 }
