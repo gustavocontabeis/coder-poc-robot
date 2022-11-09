@@ -139,13 +139,15 @@ public class RobotUI extends JFrame implements RobotListener {
 	
 	private void loadFileContentByIndex() {
 		int selectedIndex = this.listFiles.getSelectedIndex();
-		File file = this.files.get(selectedIndex);
-		try {
-			String string = new String(Files.readAllBytes(Paths.get(file.getName())), Charset.defaultCharset());
-			txtCommands.setText(string);
-			panelBuilder.getText("file").setText(listFiles.getSelectedValue());
-		} catch (IOException e) {
-			e.printStackTrace();
+		if( selectedIndex >= 0) {
+			File file = this.files.get(selectedIndex);
+			try {
+				String string = new String(Files.readAllBytes(Paths.get(file.getName())), Charset.defaultCharset());
+				txtCommands.setText(string);
+				panelBuilder.getText("file").setText(listFiles.getSelectedValue());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
