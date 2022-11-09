@@ -135,6 +135,7 @@ public class PanelBuilder {
 	public PanelBuilder addList(JList<String> component, int columns) {
 		DataField dataField = new DataField(this, component, "", columns);
 		line.add(dataField);
+		
 		return this;
 	}
 	

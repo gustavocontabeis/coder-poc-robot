@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -85,6 +86,10 @@ public class RobotUI extends JFrame implements RobotListener {
 				.addButton("Run!", 12)
 				.newLine()
 				.addList(listFiles, 12)
+				.newLine()
+				.addText("file", 6)
+				.addButton("Salvar", 3)
+				.addButton("Excluir", 3)
 				.build();
 
 		JPanel panelCommands = new JPanel(new GridLayout(1, 1));
@@ -116,8 +121,13 @@ public class RobotUI extends JFrame implements RobotListener {
 			filesNames[i] = files.get(i).getName();
 		}
 		
-		this.listFiles = new JList<String>(filesNames);
-		this.listFiles.setBounds(0, 0, 0, 150);
+		if(this.listFiles == null) {
+			this.listFiles = new JList<String>(filesNames);
+			this.listFiles.setBounds(0, 0, 0, 150);
+		}else {
+			this.listFiles.setListData(filesNames);
+		}
+		
 		this.listFiles.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -131,8 +141,9 @@ public class RobotUI extends JFrame implements RobotListener {
 		int selectedIndex = this.listFiles.getSelectedIndex();
 		File file = this.files.get(selectedIndex);
 		try {
-			String string = new String(Files.readAllBytes(Paths.get(file.getName())));
+			String string = new String(Files.readAllBytes(Paths.get(file.getName())), Charset.defaultCharset());
 			txtCommands.setText(string);
+			panelBuilder.getText("file").setText(listFiles.getSelectedValue());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -152,6 +163,11 @@ public class RobotUI extends JFrame implements RobotListener {
 				break;
 			case "Run!":
 				executarRobot();
+			case "Salvar":
+				salvarArquivo();
+				break;
+			case "Excluir":
+				excluirArquivo();
 				break;
 			default:
 				appendCommand(bt.getText().toUpperCase());
@@ -161,6 +177,31 @@ public class RobotUI extends JFrame implements RobotListener {
 			JTextField txt = (JTextField) source;
 		}
 
+	}
+
+	private void excluirArquivo() {
+		int selectedIndex = this.listFiles.getSelectedIndex();
+		File file = this.files.get(selectedIndex);
+		try {
+			Files.delete(Paths.get(file.getName()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		loadFiles();
+	}
+
+	private void salvarArquivo() {
+		
+		int selectedIndex = this.listFiles.getSelectedIndex();
+		String fileText = panelBuilder.getText("file").getText();
+		File file = fileText != "" ? new File(fileText + (fileText.endsWith("robot") ? "" : ".robot")) :this.files.get(selectedIndex);
+		try {
+			Files.write(Paths.get(file.getName()), txtCommands.getText().getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		loadFiles();
 	}
 
 	public void keyTyped(KeyEvent e) {
@@ -191,6 +232,7 @@ public class RobotUI extends JFrame implements RobotListener {
 		for (String string : split) {
 			robot.type(string);
 		}
+		System.out.println("Fim!");
 	}
 
 	private void capturarClick() {
