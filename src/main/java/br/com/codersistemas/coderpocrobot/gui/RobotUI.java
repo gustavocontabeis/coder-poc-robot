@@ -34,6 +34,8 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.apache.commons.lang3.StringUtils;
+
 import br.com.codersistemas.coderpocrobot.Keyboard;
 import br.com.codersistemas.libs.utils.FileUtil;
 
@@ -230,7 +232,10 @@ public class RobotUI extends JFrame implements RobotListener {
 	}
 
 	private void executarRobot() {
-		String[] split = txtCommands.getText().split("\n");
+		if(StringUtils.isBlank(txtCommands.getSelectedText())) {
+			txtCommands.selectAll();
+		}
+		String[] split = txtCommands.getSelectedText().split("\n");
 		for (String string : split) {
 			robot.type(string);
 		}
